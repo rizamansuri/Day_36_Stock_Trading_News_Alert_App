@@ -39,10 +39,15 @@ day_before_yesterday_closing_price = float(data_list[1]['4. close'])
 
 difference = abs(yesterday_closing_price - day_before_yesterday_closing_price)
 # print(difference)
+up_down = None
+if difference > 0:
+    up_down = "🔺"
+else:
+    up_down = "🔻"
 percentage_difference = (difference / float(yesterday_closing_price)) * 100
 # print(percentage_difference)
 
-if percentage_difference > 0:  # CHANGE 0 VALUE TO THE VALUE U WANT
+if abs(percentage_difference) > 0:  # CHANGE 0 VALUE TO THE VALUE U WANT
     news_params = {
         "apiKey": NEWS_API_KEY,
         "qInTitle": COMPANY_NAME
@@ -52,8 +57,10 @@ if percentage_difference > 0:  # CHANGE 0 VALUE TO THE VALUE U WANT
     articles = news.json()['articles']
     three_articles = articles[:3]
 
-formatted_articles = [f"Headline: {article['title']} \nBrief: {article['description']}" for article in three_articles]
-# print(formatted_articles)
+formatted_articles = [
+    f"{STOCK_NAME}: {up_down}{percentage_difference}%\nHeadline: {article['title']}. \nBrief: {article['description']}" for
+    article in three_articles]
+print(formatted_articles)
 
 client = Client(ACC_SID, AUTH_TOKEN)
 
@@ -65,3 +72,6 @@ for article in formatted_articles:
     )
 
 # print(message.sid)
+
+
+
